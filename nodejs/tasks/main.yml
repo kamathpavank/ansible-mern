@@ -1,0 +1,29 @@
+---
+- name: Install NodeJS
+  yum: name=nodejs state=present
+
+- name: Upload the api directory and package.json file
+  copy:
+    src: "/home/pavan/mern-todo"
+    dest: "/var/www/html/"
+
+- name: Run npm against package.json
+  npm:
+    path: "/var/www/html/mern-todo"
+
+- name: Imstall pm2
+  npm:
+    name: pm2@3.5.2
+    global: yes
+
+- name: SELinux allow http
+  command: setsebool httpd_can_network_connect on
+
+- name: Allow port 4000 on firewall
+  command: firewall-cmd --zone=public --add-port=4000/tcp --permanent
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+
+- name: Execute a command using the shell module
+  command: pm2 start /var/www/html/mern-todo/server.js

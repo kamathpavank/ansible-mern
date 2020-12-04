@@ -1,0 +1,20 @@
+---
+- name: Copy Mongod config
+  template: src=mongo.repo dest=/etc/yum.repos.d/mongodb-org-3.4.repo
+
+- name: Installing mongodb
+  yum:
+    name: mongodb-org
+    state: latest
+
+- name: Start and enable the engine
+  service: name=mongod state=started enabled=yes
+
+- name: Install Python pip
+  yum:
+    name: python-pip
+    state: present
+- name: Install pymongo package
+  pip:
+    name: pymongo
+    state: present
